@@ -4,7 +4,7 @@ This tool enables the use of dictcc over the commandline.
 
 	python3 dictcc.py <word>
 	
-##Setup
+## Setup
 Create a virtual environment.
 
     pip install tabulate BeautifulSoup4 requests
