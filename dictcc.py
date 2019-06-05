@@ -11,28 +11,31 @@ from bs4 import BeautifulSoup
 
 _, columns = os.popen('stty size', 'r').read().split()
 
+
 def request(word, f, t):
     header = {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; rv:31.0) Gecko/20100101 Firefox/31.0'}
     payload = {'s': word}
 
     try:
         r = requests.get(
-                "https://{}{}.dict.cc/".format(f, t),
-                headers=header,
-                params=payload)
-    except Exception as exeption:
-        print(e)
+            "https://{}{}.dict.cc/".format(f, t),
+            headers=header,
+            params=payload)
+    except Exception as exception:
+        print(exception)
         exit(1)
 
     return r.content
 
+
 def parse_single_tag(tag):
     str_tag = " ".join([a_tag.text for a_tag in tag.find_all('a')])
-    if (tag.dfn):
+    if tag.dfn:
         all_dfn = ", ".join([dfn_tag.text for dfn_tag in tag.find_all('dfn')])
         str_tag = ' '.join([str_tag, '(' + all_dfn + ')'])
 
     return '\n   '.join(textwrap.wrap(str_tag, (int(columns) - 8) / 2))
+
 
 def parse_response(html):
     soup = BeautifulSoup(html, 'html.parser')
@@ -46,11 +49,13 @@ def parse_response(html):
 
     return res_from_to
 
+
 def parse_suggestions(html):
     soup = BeautifulSoup(html, 'html.parser')
     data = [tag.a.text for tag in soup.find_all('td', 'td3nl') if tag.a]
 
     return data
+
 
 def main(args):
     words = ' '.join(args.word)
@@ -68,25 +73,26 @@ def main(args):
 
     return 0
 
+
 if __name__ == '__main__':
     prim = ['de', 'en']
     sec = ['bg', 'bs', 'cs', 'da', 'el', 'eo', 'es', 'fi', 'fr', 'hr',
-            'hu', 'is', 'it', 'la', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sk',
-            'sq', 'sr', 'sv', 'tr']
+           'hu', 'is', 'it', 'la', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sk',
+           'sq', 'sr', 'sv', 'tr']
     all_dict = prim + sec
     parser = argparse.ArgumentParser(
-            description='Query dict.cc for a translation.',
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        description='Query dict.cc for a translation.',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-p', '--prim', type=str, default='en', help='Primary language')
     parser.add_argument('-s', '--sec', type=str, default='de', help='Secondary language')
     parser.add_argument('word', help='word to translate', nargs='+')
 
     args = parser.parse_args()
 
-    if not args.prim in prim:
+    if args.prim not in prim:
         print("Primary lang must be in : [" + ", ".join(prim) + "]")
         exit(1)
-    if not args.sec in all_dict:
+    if args.sec not in all_dict:
         print("Secondary lang must be in : [" + ", ".join(all_dict) + "]")
         exit(1)
     if args.prim == args.sec:
