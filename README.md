@@ -7,7 +7,7 @@ This tool enables the use of dictcc over the commandline.
 ## Setup
 Create a virtual environment.
 
-    pip install tabulate BeautifulSoup4 requests
+    pip install tabulate BeautifulSoup4 requests pyqt5-stubs
     
     
 ## Requirements
