@@ -18,17 +18,19 @@ import dictcc
 class Ui_MainWindow(object):
 
     def on_click(self):
-        popup = QMessageBox()
-        popup.setIcon(QMessageBox.Information)
-        popup.setText('Translating...')
-        popup.setWindowTitle("Status Change")
-        popup.exec()
+        #popup = QMessageBox()
+        #popup.setIcon(QMessageBox.Information)
+        #popup.setText('Translating...')
+        #popup.setWindowTitle("Status Change")
+        #popup.exec()
         mytext = self.textEdit.toPlainText()
-        userInput = mytext.split()
+        #userInput = mytext.split()
         response = dictcc.request(mytext, 'de', 'en')
         data = dictcc.parse_response(response)
-        print(tabulate.tabulate(data, ['de', 'en'], tablefmt='orgtbl'))
-        
+        #print(tabulate.tabulate(data, ['de', 'en'], tablefmt='orgtbl'))
+        self.tableView.setText('')
+        self.tableView.setText(tabulate.tabulate(data, ['de', 'en'], tablefmt='orgtbl'))
+
 
 
 
@@ -43,9 +45,9 @@ class Ui_MainWindow(object):
 
         self.pushButton.setToolTip('Translate now')
 
-        #self.tableView = QtWidgets.QTableView(self.centralwidget)
-        #self.tableView.setGeometry(QtCore.QRect(10, 60, 771, 501))
-        #self.tableView.setObjectName("tableView")
+        self.tableView = QtWidgets.QTextEdit(self.centralwidget)
+        self.tableView.setGeometry(QtCore.QRect(10, 60, 771, 501))
+        self.tableView.setObjectName("textResult")
 
         self.textEdit = QtWidgets.QTextEdit(self.centralwidget)
         self.textEdit.setGeometry(QtCore.QRect(210, 10, 471, 41))
