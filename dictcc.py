@@ -9,6 +9,7 @@ import textwrap
 from tabulate import tabulate
 from bs4 import BeautifulSoup
 
+# request number of "rows and columns" for command line (?) from kernel
 _, columns = os.popen('stty size', 'r').read().split()
 
 
@@ -30,31 +31,40 @@ def request(word, f, t):
 
 
 def parse_single_tag(tag):
+    # prepend text content in a_tag that are HTML anchor elements
     str_tag = " ".join([a_tag.text for a_tag in tag.find_all('a')])
+    # handling HTML (marked) definitions
     if tag.dfn:
+        # prepend comma space if tag.dfn is a definition HTML element
         all_dfn = ", ".join([dfn_tag.text for dfn_tag in tag.find_all('dfn')])
+        # put all definitions in brackets
         str_tag = ' '.join([str_tag, '(' + all_dfn + ')'])
+    # wraps dict.cc results into multiple lines
+    return '\n   '.join(textwrap.wrap(str_tag, (int(columns) - 8) / 2))  # TODO: look into this more
 
-    return '\n   '.join(textwrap.wrap(str_tag, (int(columns) - 8) / 2))
 
-
-# TODO: lookup response handling
 def parse_response(html):
+    # standard html parser from bs4
     soup = BeautifulSoup(html, 'html.parser')
-    data = [tag for tag in soup.find_all('td', 'td7nl')]
-
+    # extracts tag into list
+    data = [tag for tag in soup.find_all('td', 'td7nl')]  # TODO: look into this more
+    # use iterable to get data content
     raw_from_to = zip(data[::2], data[1::2])
+    # create new list
     res_from_to = list()
 
     for f, t in raw_from_to:
+        # collect results
         res_from_to.append([parse_single_tag(f), parse_single_tag(t)])
 
     return res_from_to
 
 
 def parse_suggestions(html):
+    # standard html parser from bs4
     soup = BeautifulSoup(html, 'html.parser')
-    data = [tag.a.text for tag in soup.find_all('td', 'td3nl') if tag.a]
+    # extract suggestions
+    data = [tag.a.text for tag in soup.find_all('td', 'td3nl') if tag.a]  # TODO: look into this more
 
     return data
 
