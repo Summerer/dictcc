@@ -68,28 +68,31 @@ def parse_suggestions(html):
 
     return data
 
-
-def main(args):
-    # prepend space to word
-    words = ' '.join(args.word)
-    # consult dict.cc website
-    c = request(words, args.prim, args.sec)
-    # response handling
+def handle_translation(word, primary_lang, secondary_lang):
+    c = request(word, primary_lang, secondary_lang)
     data = parse_response(c)
 
     if data:
-        # print table if response was good
-        print(tabulate(data, [args.prim, args.sec], tablefmt='orgtbl'))
+        print(tabulate(data, [primary_lang, secondary_lang], tablefmt='orgtbl'))
     else:
-        # suggestions if response was bad
-        print(' '.join(["No translation found for:", words]))
-        # handle suggestion response
+        print(' '.join(["No translation found for:", word]))
         suggestions = parse_suggestions(c)
         print('\nHere are suggestions given by dict.cc:')
         for s in suggestions:
             print(" - {}".format(s))
 
-    return 0
+def main(args):
+    if not args.console and args.word:
+        handle_translation(args.word[0], args.prim, args.sec)
+    elif args.console:
+        print('Starting console')
+        print('Enter your words for translation')
+        print('Enter q for exit')
+
+        user_input = input('>> ')
+        while user_input != 'q':
+            handle_translation(user_input, args.prim, args.sec)
+            user_input = input('>> ')
 
 
 if __name__ == '__main__':
@@ -103,11 +106,12 @@ if __name__ == '__main__':
     all_dict = prim + sec
     # handle command line arguments
     parser = argparse.ArgumentParser(
-        description='Query dict.cc for a translation.',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-p', '--prim', type=str, default='en', help='Primary language')  # -p for setting primary language
-    parser.add_argument('-s', '--sec', type=str, default='de', help='Secondary language')  # -s for setting secondary language
-    parser.add_argument('word', help='word to translate', nargs='+')  # word to translate is last argument
+            description='Query dict.cc for a translation.',
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-p', '--prim', type=str, default='en', help='Primary language')
+    parser.add_argument('-s', '--sec', type=str, default='de', help='Secondary language')
+    parser.add_argument('-c', '--console', action='store_true')
+    parser.add_argument('word', nargs=argparse.REMAINDER, help='word to translate')
 
     args = parser.parse_args()  # parse arguments using python function
 
