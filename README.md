@@ -11,4 +11,4 @@ Create a virtual environment.
     
     
 ## Requirements
-Requires [tabulate](https://bitbucket.org/astanin/python-tabulate) and [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/).
+Requires [requests](https://pypi.org/project/requests/), [tabulate](https://bitbucket.org/astanin/python-tabulate), and [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/).

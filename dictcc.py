@@ -12,6 +12,8 @@ from tabulate import tabulate
 # in PyCharm enable "emulate terminal in output console" in the run configuration for app
 _, columns = os.popen('stty size', 'r').read().split()
 
+requests_session = requests.Session()
+
 
 def request(word, f, t):
     header = {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; rv:31.0) Gecko/20100101 Firefox/31.0'}
