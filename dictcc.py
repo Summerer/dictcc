@@ -1,15 +1,15 @@
 #!/usr/bin/python3
 
-import sys
-import requests
 import argparse
 import os
 import textwrap
 
-from tabulate import tabulate
+import requests
 from bs4 import BeautifulSoup
+from tabulate import tabulate
 
 # request number of "rows and columns" for command line (?) from kernel
+# in PyCharm enable "emulate terminal in output console" in the run configuration for app
 _, columns = os.popen('stty size', 'r').read().split()
 
 
@@ -68,6 +68,7 @@ def parse_suggestions(html):
 
     return data
 
+
 def handle_translation(word, primary_lang, secondary_lang):
     c = request(word, primary_lang, secondary_lang)
     data = parse_response(c)
@@ -80,6 +81,7 @@ def handle_translation(word, primary_lang, secondary_lang):
         print('\nHere are suggestions given by dict.cc:')
         for s in suggestions:
             print(" - {}".format(s))
+
 
 def main(args):
     if not args.console and args.word:
@@ -106,8 +108,8 @@ if __name__ == '__main__':
     all_dict = prim + sec
     # handle command line arguments
     parser = argparse.ArgumentParser(
-            description='Query dict.cc for a translation.',
-            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        description='Query dict.cc for a translation.',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-p', '--prim', type=str, default='en', help='Primary language')
     parser.add_argument('-s', '--sec', type=str, default='de', help='Secondary language')
     parser.add_argument('-c', '--console', action='store_true')
